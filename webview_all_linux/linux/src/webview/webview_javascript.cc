@@ -110,8 +110,9 @@ static void script_finished_cb(GObject *object, GAsyncResult *result,
                                gpointer user_data) {
   FlMethodCall *method_call = FL_METHOD_CALL(user_data);
   GError *error = nullptr;
-  JSCValue *value = webkit_web_view_evaluate_javascript_finish(
+  WebKitJavascriptResult *js_result = webkit_web_view_run_javascript_finish(
       WEBKIT_WEB_VIEW(object), result, &error);
+
   if (error != nullptr) {
     respond(method_call, error_response("javascript_error", error->message));
     g_clear_error(&error);
@@ -120,9 +121,12 @@ static void script_finished_cb(GObject *object, GAsyncResult *result,
   }
 
   FlValue *payload = fl_value_new_null();
-  if (value != nullptr) {
-    payload = serialize_js_result(value);
-    g_object_unref(value);
+  if (js_result != nullptr) {
+    JSCValue *value = webkit_javascript_result_get_js_value(js_result);
+    if (value != nullptr) {
+      payload = serialize_js_result(value);
+    }
+    webkit_javascript_result_unref(js_result);
   }
 
   respond(method_call, success_response(payload));
@@ -214,8 +218,8 @@ void destroy_js_channel_handler_data(gpointer data, GClosure *closure) {
 void evaluate_javascript(WebKitWebView *web_view, const gchar *script,
                          FlMethodCall *method_call) {
   g_object_ref(method_call);
-  webkit_web_view_evaluate_javascript(web_view, script, -1, nullptr, nullptr,
-                                      nullptr, script_finished_cb, method_call);
+  webkit_web_view_run_javascript(web_view, script, nullptr, script_finished_cb,
+                                 method_call);
 }
 
 static void add_user_script(WebKitUserContentManager *manager,

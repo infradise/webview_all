@@ -8,6 +8,7 @@ set(PLUGIN_NAME "${PROJECT_NAME}_plugin")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(WEBKIT REQUIRED IMPORTED_TARGET webkit2gtk-4.0)
+pkg_check_modules(LIBSOUP REQUIRED libsoup-2.4)
 
 add_library(${PLUGIN_NAME} SHARED
   "src/common/method_channel_utils.cc"

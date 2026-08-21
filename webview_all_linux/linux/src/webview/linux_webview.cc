@@ -659,10 +659,10 @@ static gboolean load_failed_with_tls_errors_cb(WebKitWebView *widget,
 
   gchar *host = nullptr;
   if (failing_uri != nullptr) {
-    GUri *uri = g_uri_parse(failing_uri, G_URI_FLAGS_NONE, nullptr);
+    SoupURI *uri = soup_uri_new(failing_uri);
     if (uri != nullptr) {
-      host = g_strdup(g_uri_get_host(uri));
-      g_uri_unref(uri);
+      host = g_strdup(soup_uri_get_host(uri));
+      soup_uri_free(uri);
     }
   }
 

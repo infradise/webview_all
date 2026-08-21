@@ -10,6 +10,28 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(WEBKIT REQUIRED IMPORTED_TARGET webkit2gtk-4.0)
 pkg_check_modules(LIBSOUP REQUIRED libsoup-2.4)
 
+target_include_directories(${PLUGIN_NAME} PRIVATE
+  ${WEBKIT2GTK_INCLUDE_DIRS}
+  ${LIBSOUP_INCLUDE_DIRS}
+)
+
+target_compile_options(${PLUGIN_NAME} PRIVATE
+  ${WEBKIT2GTK_CFLAGS_OTHER}
+  ${LIBSOUP_CFLAGS_OTHER}
+)
+
+target_link_libraries(${PLUGIN_NAME} PRIVATE
+  flutter
+  PkgConfig::GTK
+  ${WEBKIT2GTK_LIBRARIES}
+  ${LIBSOUP_LIBRARIES}
+)
+
+target_link_directories(${PLUGIN_NAME} PRIVATE
+  ${WEBKIT2GTK_LIBRARY_DIRS}
+  ${LIBSOUP_LIBRARY_DIRS}
+)
+
 add_library(${PLUGIN_NAME} SHARED
   "src/common/method_channel_utils.cc"
   "src/platform/flutter_view.cc"

@@ -7,7 +7,7 @@ cmake_policy(VERSION 3.10...3.24)
 set(PLUGIN_NAME "${PROJECT_NAME}_plugin")
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(WEBKIT REQUIRED IMPORTED_TARGET webkit2gtk-4.1)
+pkg_check_modules(WEBKIT REQUIRED IMPORTED_TARGET webkit2gtk-4.0)
 
 add_library(${PLUGIN_NAME} SHARED
   "src/common/method_channel_utils.cc"
